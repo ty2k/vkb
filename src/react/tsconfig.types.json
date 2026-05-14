@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "outDir": "dist/types",
+    "declarationDir": "dist/types",
+    "types": ["react", "react-dom"],
+    "rootDir": "./src/lib"
+  },
+  "include": ["src/lib/index.ts"]
+}

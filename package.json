@@ -1,0 +1,49 @@
+{
+  "name": "v-k-b",
+  "version": "0.0.1",
+  "description": "Virtual keyboard component library",
+  "keywords": [
+    "keyboard",
+    "react",
+    "design system"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "clean": "rm -rf dist/react",
+    "build:prepare-dist": "cd dist && mkdir react && cd ..",
+    "build:react": "cd src/react && npm run build && cd ../.. && cp -r ./src/react/dist/* dist/react",
+    "build": "npm run clean && npm run build:prepare-dist && npm run build:react",
+    "test": "vitest ."
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "vitest": "4.1.6"
+  },
+  "license": "Apache-2.0",
+  "author": "Tyler Krys <tylerkrys@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ty2k/vkb.git",
+    "directory": "."
+  },
+  "bugs": {
+    "url": "https://github.com/ty2k/vkb/issues"
+  },
+  "homepage": "https://github.com/ty2k/vkb#readme",
+  "private": false
+}
