@@ -1,9 +1,4 @@
-import {
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-  type ElementType,
-} from "react";
+import { type ComponentPropsWithoutRef, type ElementType } from "react";
 
 import type {
   Key,
@@ -13,6 +8,7 @@ import type {
 } from "./types";
 
 import { KeyboardKey } from "./KeyboardKey";
+import { useKeyboard, type KeyboardController } from "./useKeyboard";
 
 export interface KeyboardProps<
   C extends ElementType,
@@ -43,6 +39,13 @@ export interface KeyboardProps<
   getButtonProps?: (
     context: ButtonRenderContext
   ) => Partial<SharedButtonProps<C, ActionProp>>;
+  /** Optional shared controller for keyboard uppercase + press handling.
+   *
+   * When provided, the `Keyboard` will use the controller’s handlers (including
+   * its configured `handlePress`) instead of this component’s `handlePress`
+   * prop.
+   */
+  keyboardController?: KeyboardController;
   /**
    * Number of milliseconds to allow a shift/caps lock double press for
    * `KeyObject` keys with `special: "shift-or-caps"` to enable caps lock mode.
@@ -70,58 +73,15 @@ export function Keyboard<
   buttonActionProp,
   buttonProps,
   getButtonProps,
+  keyboardController,
   shiftOrCapsDoublePressMilliseconds = 300,
   ...divProps
 }: KeyboardProps<C, ActionProp>) {
-  const [isShiftMode, setIsShiftMode] = useState(false);
-  const [isCapsMode, setIsCapsMode] = useState(false);
-  const lastShiftOrCapsPressAtRef = useRef<number | null>(null);
-
-  const isUppercaseMode = isCapsMode || isShiftMode;
-
-  const handleKeyPress = (key: Key) => {
-    // Fire the `handlePress()` function passed in by the consumer first.
-    handlePress(key);
-
-    // If a `KeyObject` with `special` set to "shift", "caps", or
-    // "shift-or-caps") is pressed, exit both shift and caps modes.
-    // Any other key input isn't affected because `handlePress()` has already
-    // been dispatched.
-    if (
-      typeof key === "object" &&
-      (key.special === "shift" ||
-        key.special === "caps" ||
-        key.special === "shift-or-caps")
-    ) {
-      setIsShiftMode(false);
-      setIsCapsMode(false);
-
-      // If shift mode is active and a regular key is pressed, exit shift mode
-      // so only that single character is uppercase.
-    } else if (isShiftMode) {
-      setIsShiftMode(false);
-    }
-  };
-
-  // Handle `KeyObject` presses with `special: "shift-or-caps"`,
-  // which should behave similarly to a mobile phone keyboard shift.
-  const handleShiftOrCapsPress = () => {
-    const now = Date.now();
-    const lastPressAt = lastShiftOrCapsPressAtRef.current;
-
-    if (
-      lastPressAt !== null &&
-      now - lastPressAt <= shiftOrCapsDoublePressMilliseconds
-    ) {
-      setIsCapsMode((prev) => !prev);
-      setIsShiftMode(false);
-      lastShiftOrCapsPressAtRef.current = null;
-      return;
-    }
-
-    lastShiftOrCapsPressAtRef.current = now;
-    setIsShiftMode((prev) => !prev);
-  };
+  const internalKeyboardController = useKeyboard({
+    handlePress,
+    shiftOrCapsDoublePressMilliseconds,
+  });
+  const controller = keyboardController ?? internalKeyboardController;
 
   const ariaAttributes: Record<string, string> = {
     role: ariaRole,
@@ -134,7 +94,7 @@ export function Keyboard<
   }
 
   return (
-    <div id={`vkb-${id}`} {...divProps} {...ariaAttributes}>
+    <div id={id} {...divProps} {...ariaAttributes}>
       <div>
         {rows.map((row, rowIndex) => {
           return (
@@ -148,8 +108,10 @@ export function Keyboard<
                     <KeyboardKey
                       key={`key-${rowIndex}-${keyIndex}-${keyId}`}
                       k={key}
-                      onActivate={() => setIsShiftMode((prev) => !prev)}
-                      isShiftMode={isUppercaseMode}
+                      onActivate={controller.handleShiftPress}
+                      isUppercase={controller.isUppercase}
+                      isShifted={controller.isShifted}
+                      isCapsLocked={controller.isCapsLocked}
                       ButtonComponent={ButtonComponent}
                       buttonActionProp={buttonActionProp}
                       buttonProps={buttonProps}
@@ -164,11 +126,10 @@ export function Keyboard<
                     <KeyboardKey
                       key={`key-${rowIndex}-${keyIndex}-${keyId}`}
                       k={key}
-                      onActivate={() => {
-                        setIsCapsMode((prev) => !prev);
-                        setIsShiftMode(false);
-                      }}
-                      isShiftMode={isUppercaseMode}
+                      onActivate={controller.handleCapsPress}
+                      isUppercase={controller.isUppercase}
+                      isShifted={controller.isShifted}
+                      isCapsLocked={controller.isCapsLocked}
                       ButtonComponent={ButtonComponent}
                       buttonActionProp={buttonActionProp}
                       buttonProps={buttonProps}
@@ -186,8 +147,10 @@ export function Keyboard<
                     <KeyboardKey
                       key={`key-${rowIndex}-${keyIndex}-${keyId}`}
                       k={key}
-                      onActivate={handleShiftOrCapsPress}
-                      isShiftMode={isUppercaseMode}
+                      onActivate={controller.handleShiftOrCapsPress}
+                      isUppercase={controller.isUppercase}
+                      isShifted={controller.isShifted}
+                      isCapsLocked={controller.isCapsLocked}
                       ButtonComponent={ButtonComponent}
                       buttonActionProp={buttonActionProp}
                       buttonProps={buttonProps}
@@ -202,8 +165,10 @@ export function Keyboard<
                     <KeyboardKey
                       key={`key-${rowIndex}-${keyIndex}-${key}`}
                       k={key}
-                      onActivate={handleKeyPress}
-                      isShiftMode={isUppercaseMode}
+                      onActivate={controller.handleKeyPress}
+                      isUppercase={controller.isUppercase}
+                      isShifted={controller.isShifted}
+                      isCapsLocked={controller.isCapsLocked}
                       ButtonComponent={ButtonComponent}
                       buttonActionProp={buttonActionProp}
                       buttonProps={buttonProps}
@@ -219,10 +184,7 @@ export function Keyboard<
                         ...key,
                         cb: (pressedKey: string) => {
                           key.cb?.(pressedKey);
-
-                          if (isShiftMode) {
-                            setIsShiftMode(false);
-                          }
+                          controller.handleCallbackKeyPress();
                         },
                       }
                     : key;
@@ -231,8 +193,10 @@ export function Keyboard<
                   <KeyboardKey
                     key={`key-${rowIndex}-${keyIndex}-${keyId}`}
                     k={keyWithShiftAwareCallback}
-                    onActivate={handleKeyPress}
-                    isShiftMode={isUppercaseMode}
+                    onActivate={controller.handleKeyPress}
+                    isUppercase={controller.isUppercase}
+                    isShifted={controller.isShifted}
+                    isCapsLocked={controller.isCapsLocked}
                     ButtonComponent={ButtonComponent}
                     buttonActionProp={buttonActionProp}
                     buttonProps={buttonProps}

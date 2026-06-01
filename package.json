@@ -1,6 +1,12 @@
 {
   "name": "v-k-b",
-  "version": "0.0.2",
+  "version": "0.0.3",
+  "description": "Virtual keyboard for React front-ends.",
+  "keywords": [
+    "keyboard",
+    "react",
+    "design system"
+  ],
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -60,5 +66,17 @@
   },
   "allowScripts": {
     "fsevents@2.3.3": true
-  }
+  },
+  "license": "Apache-2.0",
+  "author": "Tyler Krys <tylerkrys@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ty2k/vkb.git",
+    "directory": "."
+  },
+  "bugs": {
+    "url": "https://github.com/ty2k/vkb/issues"
+  },
+  "homepage": "https://github.com/ty2k/vkb#readme",
+  "private": false
 }

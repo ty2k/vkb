@@ -9,7 +9,9 @@ describe("KeyboardKey", () => {
     const element = KeyboardKey({
       k: { k: "`", uK: "~" },
       onActivate,
-      isShiftMode: true,
+      isUppercase: true,
+      isShifted: true,
+      isCapsLocked: false,
       ButtonComponent: "button",
       buttonActionProp: "onClick",
     });

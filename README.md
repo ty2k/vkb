@@ -12,13 +12,13 @@ Virtual keyboard library for React front-ends.
 
 ## Use
 
-Import the `VkbReactKeyboard` component and `Key` type:
+Import the `Keyboard` component and `Key` type:
 
 ```tsx
-import { VkbReactKeyboard, type Key } from "v-k-b";
+import { Keyboard, type Key } from "v-k-b";
 ```
 
-In your application code, use it with a state management library like `useState`:
+In your application code, keep track of the text state:
 
 ```tsx
 function App() {
@@ -40,7 +40,7 @@ function App() {
 
   return (
     <>
-      <VkbReactKeyboard
+      <Keyboard
         id="qwerty"
         rows={[
           [
@@ -123,7 +123,7 @@ function App() {
 
 ### How React button components work
 
-`VkbReactKeyboard` lets you pass your own React button components to use with the keyboard. The `ButtonComponent` prop accepts things like:
+`Keyboard` lets you pass your own React button components to use with the keyboard. The `ButtonComponent` prop accepts things like:
 
 - a `Button` imported from a library like React Aria Components
 - the string `"button"` to indicate you want to use the browser-native button
@@ -139,7 +139,7 @@ Use the `getButtonProps` callback that receives information about the key being 
 
 ### How rows of keys work
 
-`VkbReactKeyboard` accepts a `rows` array prop, which is an array of `Key` arrays.
+`Keyboard` accepts a `rows` array prop, which is an array of `Key` arrays.
 
 ### How keys work
 
@@ -195,7 +195,15 @@ const backspaceKeyObject: KeyObject = {
 
 ### How capitalization (shift and caps lock) works
 
-Keyboards keep track of lowercase/uppercase state internally using React's `useState()`. Keyboards initially start off in lowercase mode. You can access uppercase mode by including a Shift or Caps Lock key:
+Keyboards start in lowercase mode and move between three explicit uppercase states:
+
+- lowercase
+- one-shot shift (`isShifted`)
+- caps lock (`isCapsLocked`)
+
+The `Keyboard` component manages uppercase state internally by default, and the same logic is also exported through `useKeyboard()` when you want to share uppercase state with other UI.
+
+You can access uppercase mode by including a Shift or Caps Lock key:
 
 ```tsx
 // Shift key
@@ -228,7 +236,53 @@ You can also use a mobile phone-style "shift or caps lock" key with a double-pre
 
 You can specify the maximum amount of time a `shift-or-caps` button should work to enter caps lock mode by using the `shiftOrCapsDoublePressMilliseconds` prop, which defaults to 300 milliseconds if not specified.
 
-Note that internally, "shift mode" and "caps mode" are different stateful variables. If you enter caps mode, you use a `caps` button press or `shift-or-caps` button double-press to exit it. For this reason, it might be confusing to include both options on one keyboard.
+Pressing any uppercase key while uppercase is active returns the keyboard to lowercase mode, except for a rapid second `shift-or-caps` press, which promotes one-shot shift into caps lock.
+
+If you want to show the current uppercase state elsewhere in your UI, share a controller created with `useKeyboard()`:
+
+```tsx
+import { Keyboard, useKeyboard, type Key } from "v-k-b";
+import { useState } from "react";
+
+function App() {
+  const [text, setText] = useState("");
+  const keyboard = useKeyboard({
+    handlePress: (key: Key) => {
+      if (typeof key === "string") return setText((prev) => prev + key);
+      return setText((prev) => prev + (key.v ?? key.k));
+    },
+  });
+
+  return (
+    <>
+      <div aria-live="polite">
+        {keyboard.isCapsLocked
+          ? "Caps Lock On"
+          : keyboard.isShifted
+            ? "Shift On"
+            : "Lowercase"}
+      </div>
+
+      <Keyboard
+        id="shared-state"
+        rows={[
+          [
+            { k: "⇧ Shift/Caps", uK: "⇧ Shift/Caps", special: "shift-or-caps" },
+            { k: "Caps Lock", uK: "Caps Lock", special: "caps" },
+            "a",
+            "b",
+          ],
+        ]}
+        ButtonComponent="button"
+        buttonActionProp="onClick"
+        keyboardController={keyboard}
+      />
+
+      <output>{text}</output>
+    </>
+  );
+}
+```
 
 If you use a `Key` that's just a string, the Keyboard will infer how capitalization should work by using [`String.prototype.toLocaleUppercase()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/toLocaleUpperCase).
 
@@ -236,7 +290,7 @@ If a `KeyObject` with a callback `cb` is pressed while in shift mode, the keyboa
 
 ### How styling works
 
-Any extra props passed to `VkbReactKeyboard` are spread on the parent `<div>` being returned. Use this to target your styles by passing `className`, or use a CSS-in-JS library to style the component.
+Any extra props passed to `Keyboard` are spread on the parent `<div>` being returned. Use this to target your styles by passing `className`, or use a CSS-in-JS library to style the component.
 
 ### Accessibility
 

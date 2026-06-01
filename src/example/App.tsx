@@ -2,33 +2,51 @@ import { useState } from "react";
 
 import { Keyboard } from "../lib/Keyboard";
 import type { Key } from "../lib/types";
+import { useKeyboard } from "../lib/useKeyboard";
 
-// import { Keyboard, type Key } from "../../dist";
+// Un-comment the `import` line below to test
+// distributed code after running `npm run build`:
+// -----------------------------------------------
+// import { Keyboard, useKeyboard, type Key } from "../../dist";
 
 import "./App.css";
 
 function App() {
   const [text, setText] = useState("");
 
-  function handleKeyPress(key: Key) {
-    if (typeof key === "string") return setText(text + key);
-    if (key.v) return setText(text + key.v);
-    return setText(text + key.k);
-  }
-
   function handleBackspace() {
-    setText(text.substring(0, text.length - 1));
+    setText((prev) => prev.substring(0, prev.length - 1));
   }
 
   function handleClear() {
     setText("");
   }
 
+  const keyboard = useKeyboard({
+    handlePress: (key: Key) => {
+      if (typeof key === "string") {
+        setText((prev) => prev + key);
+        return;
+      }
+
+      setText((prev) => prev + (key.v ?? key.k));
+    },
+    shiftOrCapsDoublePressMilliseconds: 200,
+  });
+
   return (
     <>
       <div>
         <p>
-          <span>Input:</span> {text}
+          <span>Input:</span> <output>{text}</output>
+        </p>
+        <p aria-live="polite">
+          <span>Keyboard mode:</span>{" "}
+          {keyboard.isCapsLocked
+            ? "Caps Lock On"
+            : keyboard.isShifted
+              ? "Shift On"
+              : "Lowercase"}
         </p>
       </div>
       <Keyboard
@@ -98,8 +116,7 @@ function App() {
         ]}
         ButtonComponent={"button"}
         buttonActionProp={"onClick"}
-        handlePress={(key) => handleKeyPress(key)}
-        shiftOrCapsDoublePressMilliseconds={200}
+        keyboardController={keyboard}
       />
     </>
   );

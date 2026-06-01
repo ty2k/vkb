@@ -2,22 +2,22 @@ import type { Key } from "./types";
 
 /**
  * Return a string value for the key button given a {@link Key} and
- * shift state.
+ * uppercase state.
  *
  * @param {Key} key key The `KeyString` or `KeyObject`
- * @param {boolean} isShiftMode Whether or not the keyboard is in shift mode
+ * @param {boolean} isUppercase Whether or not the keyboard is in uppercase mode
  * @returns {string} The value for the `KeyString` or `KeyObject`
  */
-export function getKeyValue(key: Key, isShiftMode: boolean): string {
+export function getKeyValue(key: Key, isUppercase: boolean): string {
   // Handle `KeyString` input for `Key`.
   if (typeof key === "string") {
-    return isShiftMode ? key.toLocaleUpperCase() : key;
+    return isUppercase ? key.toLocaleUpperCase() : key;
   }
 
   // All remaining cases below handle `KeyObject` input for `Key`.
 
-  // Handle shift mode.
-  if (isShiftMode) {
+  // Handle uppercase mode.
+  if (isUppercase) {
     // If the uppercase value is supplied, use that.
     if (key.uV) return key.uV;
 

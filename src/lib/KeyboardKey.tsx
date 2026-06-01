@@ -17,8 +17,12 @@ export interface KeyboardKeyProps<
   k: Key;
   /** Function that fires when a key is pressed */
   onActivate: (key: Key) => void;
-  /** Is the keyboard in shift mode */
-  isShiftMode: boolean;
+  /** Is the keyboard in any uppercase mode */
+  isUppercase: boolean;
+  /** Is the keyboard in one-shot shift mode */
+  isShifted: boolean;
+  /** Is the keyboard in caps lock mode */
+  isCapsLocked: boolean;
   /** Button component used to render each key */
   ButtonComponent: C;
   /** The action prop name to use on the button,
@@ -38,7 +42,9 @@ export function KeyboardKey<
 >({
   k,
   onActivate,
-  isShiftMode,
+  isUppercase,
+  isShifted,
+  isCapsLocked,
   ButtonComponent,
   buttonActionProp,
   buttonProps,
@@ -48,13 +54,15 @@ export function KeyboardKey<
   const isShiftKey =
     typeof k === "object" &&
     (k?.special === "shift" || k?.special === "shift-or-caps");
-  const label = getKeyLabel(k, isShiftMode);
-  const value = getKeyValue(k, isShiftMode);
+  const label = getKeyLabel(k, isUppercase);
+  const value = getKeyValue(k, isUppercase);
 
   const context: ButtonRenderContext = {
     keyDef: k,
     isShiftKey,
-    isShiftMode,
+    isUppercase,
+    isShifted,
+    isCapsLocked,
     label,
     value,
   };
