@@ -93,7 +93,7 @@ function Keyboard({ id, rows, handlePress = () => {}, ariaLabel, ariaLabelledBy,
 			lastShiftOrCapsPressAtRef.current = null;
 			return;
 		}
-		lastShiftOrCapsPressAtRef.current = null;
+		lastShiftOrCapsPressAtRef.current = now;
 		setIsShiftMode((prev) => !prev);
 	};
 	const ariaAttributes = { role: ariaRole };
