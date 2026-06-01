@@ -5,17 +5,12 @@ permissions:
 
 on:
   pull_request:
-    paths:
-      - src/react/**
   workflow_dispatch:
 
 jobs:
   test:
     name: React tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./src/react
 
     steps:
       - name: Checkout code
