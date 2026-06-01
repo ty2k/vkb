@@ -21,5 +21,11 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "prettier.config.js",
+    "rolldown.config.ts",
+    "vite.config.ts",
+    "rolldown.config.dts.ts"
+  ]
 }

@@ -1,18 +1,16 @@
 # v-k-b ⌨️
 
-Virtual keyboard library for web front-ends.
+Virtual keyboard library for React front-ends.
 
 - No styles or opinionated button components included - bring your design system components and custom styling.
 - Handle your own text field state with key press callbacks, including backspace and clear functions.
-- Minimum possible dependencies. For example, the React keyboard component only depends on `react` and `react-dom` as peer dependencies.
+- Minimum possible dependencies: `react` and `react-dom` as peer dependencies.
 
 ## Install
 
 `npm i v-k-b`
 
-## Components by front-end
-
-### React
+## Use
 
 Import the `VkbReactKeyboard` component and `Key` type:
 
@@ -123,7 +121,7 @@ function App() {
 }
 ```
 
-#### How React button components work
+### How React button components work
 
 `VkbReactKeyboard` lets you pass your own React button components to use with the keyboard. The `ButtonComponent` prop accepts things like:
 
@@ -139,11 +137,11 @@ Use the `buttonProps` prop for passing common props to all buttons. For example,
 
 Use the `getButtonProps` callback that receives information about the key being pressed to let you customize the rendering of individual buttons.
 
-#### How rows of keys work
+### How rows of keys work
 
 `VkbReactKeyboard` accepts a `rows` array prop, which is an array of `Key` arrays.
 
-#### How keys work
+### How keys work
 
 A `Key` can be a regular string `KeyString`:
 
@@ -195,7 +193,7 @@ const backspaceKeyObject: KeyObject = {
 };
 ```
 
-#### How capitalization (shift and caps lock) works
+### How capitalization (shift and caps lock) works
 
 Keyboards keep track of lowercase/uppercase state internally using React's `useState()`. Keyboards initially start off in lowercase mode. You can access uppercase mode by including a Shift or Caps Lock key:
 
@@ -236,11 +234,11 @@ If you use a `Key` that's just a string, the Keyboard will infer how capitalizat
 
 If a `KeyObject` with a callback `cb` is pressed while in shift mode, the keyboard returns to lowercase mode.
 
-#### How styling works
+### How styling works
 
 Any extra props passed to `VkbReactKeyboard` are spread on the parent `<div>` being returned. Use this to target your styles by passing `className`, or use a CSS-in-JS library to style the component.
 
-#### Accessibility
+### Accessibility
 
 For labelling, the `ariaLabel` prop can be used to assign an [aria-label](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-label) directly. The `ariaLabelledBy` prop can be used to point to a label outside of the component using [aria-labelledby](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Attributes/aria-labelledby).
 
