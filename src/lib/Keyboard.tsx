@@ -39,7 +39,12 @@ export interface KeyboardProps<
   getButtonProps?: (
     context: ButtonRenderContext
   ) => Partial<SharedButtonProps<C, ActionProp>>;
-  /** Optional shared controller for keyboard uppercase state */
+  /** Optional shared controller for keyboard uppercase + press handling.
+   *
+   * When provided, the `Keyboard` will use the controller’s handlers (including
+   * its configured `handlePress`) instead of this component’s `handlePress`
+   * prop.
+   */
   keyboardController?: KeyboardController;
   /**
    * Number of milliseconds to allow a shift/caps lock double press for
