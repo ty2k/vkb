@@ -290,7 +290,7 @@ If a `KeyObject` with a callback `cb` is pressed while in shift mode, the keyboa
 
 ### How styling works
 
-Any extra props passed to `VkbReactKeyboard` are spread on the parent `<div>` being returned. Use this to target your styles by passing `className`, or use a CSS-in-JS library to style the component.
+Any extra props passed to `Keyboard` are spread on the parent `<div>` being returned. Use this to target your styles by passing `className`, or use a CSS-in-JS library to style the component.
 
 ### Accessibility
 
