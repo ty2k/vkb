@@ -302,6 +302,6 @@ describe("Keyboard", () => {
 
     expect(keyboard.className).toContain("custom-keyboard");
     expect(keyboard.getAttribute("data-layout")).toBe("compact");
-    expect(keyboard.getAttribute("id")).toBe("vkb-qwerty-div-props");
+    expect(keyboard.getAttribute("id")).toBe("qwerty-div-props");
   });
 });

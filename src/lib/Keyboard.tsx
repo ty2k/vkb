@@ -94,7 +94,7 @@ export function Keyboard<
   }
 
   return (
-    <div id={`vkb-${id}`} {...divProps} {...ariaAttributes}>
+    <div id={id} {...divProps} {...ariaAttributes}>
       <div>
         {rows.map((row, rowIndex) => {
           return (
