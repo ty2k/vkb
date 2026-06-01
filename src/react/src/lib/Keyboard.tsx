@@ -119,7 +119,7 @@ export function Keyboard<
       return;
     }
 
-    lastShiftOrCapsPressAtRef.current = null;
+    lastShiftOrCapsPressAtRef.current = now;
     setIsShiftMode((prev) => !prev);
   };
 
