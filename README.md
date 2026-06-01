@@ -302,7 +302,7 @@ Pass other accessibility props as needed and they will be spread to the parent `
 
 ## Development
 
-Each supported front-end framework gets its own directory in `src`. The barrel files in `dist` are written by hand and will export all the individual components and common types. The `dist` folder gets checked into the repo with these barrel files, and they are not touched by the `clean` script for this reason.
+`.nvmrc` lists the Node.js version used by this project. This file is used by the GitHub Actions workflows when testing and building the app.
 
 ## License
 
