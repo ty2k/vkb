@@ -37,4 +37,4 @@ jobs:
         working-directory: ./
 
       - name: Publish to npm
-        run: npm publish --tag latest --provenance
+        run: npm stage publish --tag latest --provenance
