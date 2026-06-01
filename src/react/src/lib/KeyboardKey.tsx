@@ -28,7 +28,7 @@ export interface KeyboardKeyProps<
   buttonProps?: SharedButtonProps<C, ActionProp>;
   /** Optional callback for per-key button props */
   getButtonProps?: (
-    context: ButtonRenderContext,
+    context: ButtonRenderContext
   ) => Partial<SharedButtonProps<C, ActionProp>>;
 }
 
@@ -92,6 +92,6 @@ export function KeyboardKey<
       ...(mergedProps as ButtonPropsFor<C>),
       ...(actionProp as ButtonPropsFor<C>),
     },
-    label,
+    label
   );
 }
