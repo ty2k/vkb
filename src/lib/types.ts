@@ -71,8 +71,12 @@ export interface ButtonRenderContext {
   keyDef: Key;
   /** Is the key being returned the shift key. */
   isShiftKey: boolean;
-  /** Is the keyboard in shift mode. */
-  isShiftMode: boolean;
+  /** True when the keyboard is in any uppercase mode. */
+  isUppercase: boolean;
+  /** True when the keyboard is in one-shot shift mode. */
+  isShifted: boolean;
+  /** True when the keyboard is in caps lock mode. */
+  isCapsLocked: boolean;
   label: string;
   value: string;
 }
