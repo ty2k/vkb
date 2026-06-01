@@ -37,7 +37,9 @@ function App() {
   return (
     <>
       <div>
-        <output>Input:</output> {text}
+        <p>
+          <span>Input:</span> <output>{text}</output>
+        </p>
         <p aria-live="polite">
           <span>Keyboard mode:</span>{" "}
           {keyboard.isCapsLocked
