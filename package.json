@@ -1,6 +1,6 @@
 {
   "name": "v-k-b",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Virtual keyboard component library",
   "keywords": [
     "keyboard",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "typescript": "6.0.3",
-    "vitest": "4.1.6"
+    "vitest": "4.1.7"
   },
   "license": "Apache-2.0",
   "author": "Tyler Krys <tylerkrys@gmail.com>",
